@@ -73,6 +73,110 @@ public class LinkedList {
         length++;
     }
 
+    public Node removeLast(){
+        // check if list is empty.
+            // if so, return null
+        // check if list is length of 1
+            // if so, return head (first node)
+        // We want to set "tail" to "tail.previous" (which isn't a thing yet)
+        // We want to return the last node, so we save it as a variable. Maybe "lastNode"
+        // Once we set the tail.prev to tail, we make tail.next null
+            // this will cut off the lastNode from the list
+        // we then return lastNode
+
+        // To do this, we want to run a loop.
+        // We'll also need a temp var, let's call it current
+        // when looping, if current.next == tail:
+            // then lastNode = tail
+        // tail = current
+        // tail.next = null
+        // return lastNode
+
+        if(length == 0) {
+            return null;
+        }
+
+        Node lastNode = tail;
+        Node current = head;
+
+        while (current != null) {
+            if (current.next == tail) {
+                tail = current;
+                tail.next = null;
+                length--;
+                return lastNode;
+            }
+            current = current.next;
+        }
+        length--;
+        if(length == 0) {
+            head = null;
+            tail = null;
+            return lastNode;
+        }
+        return lastNode;
+    }
+
+    public void prepend(int value) {
+        // We have a new node, we want it at the very front
+        // We will set newNode.next = head
+        // Then we will set head to newNode
+        // Then return
+        Node newNode = new Node(value);
+        if(length == 0) {
+            head = newNode;
+            tail = newNode;
+        }
+        newNode.next = head;
+        head = newNode;
+        length++;
+    }
+
+    public Node removeFirst(){
+        // check if length is 0. If it is, return null.
+        if (length == 0) {
+            return null;
+        }
+        // make a firstNode variable and set it to head.
+        // head will move up one, but firstNode will remain
+        Node firstNode = head;
+
+        // if length is 1, we need to return head, then decrement length.
+        // we set variable firstNode = head.
+        // set head and tail = null.
+        // decrement length by 1.
+        // return firstNode
+        if (length == 1) {
+            head = null;
+            tail = null;
+            length--;
+            return firstNode;
+        }
+
+        // if length is greater than 1, we move head to be firstNode.next
+        // we then set firstNode.next to null, cutting it off from the list
+        // we then decrement the length by 1
+        // we then return firstNode
+        head = firstNode.next;
+        firstNode.next = null;
+        length--;
+        return firstNode;
+
+    }
+
+    public Node get(int index){
+        if(index < 0 || index >= length) {
+            return null;
+        }
+
+        Node temp = head;
+
+        for(int i = 0; i < index; i++) {
+            temp = temp.next;
+        }
+        return temp;
+    }
+
     // I'll want to use two runners, "slow" and "fast".
     // fast will traverse twice as fast as slow.
     // Once fast has a .next (or a .next.next) of "null", then we return slow
