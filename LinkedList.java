@@ -177,24 +177,100 @@ public class LinkedList {
         return temp;
     }
 
+    public boolean set(int index, int value) {
+        // given an index, we find the node at that index and set its value to "value"
+        // if index is less than 0 or greater than the length, we return false
+        // if we are unable to set the value at that index for some other reason, we also return false
+        // if we successfully change the value at the given index, we return true
+
+        Node temp = get(index);
+        if(temp != null) {
+            temp.value = value;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean insert(int index, int value) {
+        if(index < 0 || index > length) {
+            return false;
+        }
+
+        if (index == 0) {
+            prepend(value);
+            return true;
+        }
+
+        if (index == length) {
+            append(value);
+            return true;
+        }
+
+        Node previous = get(index -1);
+        Node nodeToBeInserted = new Node(value);
+
+        nodeToBeInserted.next = previous.next;
+        previous.next = nodeToBeInserted;
+        length++;
+        return true;
+    }
+
+    public Node remove(int index) {
+        // return null if index < 0 or index >= length
+        if(index < 0 || index >= length) {
+            return null;
+        }
+        if(index == 0) {
+            return removeFirst();
+        }
+        if(index == length - 1) {
+            return removeLast();
+        }
+        Node temp = get(index - 1);
+        Node nodeToBeRemoved = temp.next;
+
+        temp.next = nodeToBeRemoved.next;
+        nodeToBeRemoved.next = null;
+
+        length --;
+        return nodeToBeRemoved;
+    }
+
+    public void reverse() {
+        // Need to swap head and tail
+        // need to reverse pointers
+        Node temp = head;
+        head = tail;
+        tail = temp;
+
+        Node after = temp.next;
+        Node before = null;
+
+        for(int i = 0; i < length; i++){
+            after = temp.next;
+            temp.next = before;
+            before = temp;
+            temp = after;
+        }
+
+    }
+
     // I'll want to use two runners, "slow" and "fast".
     // fast will traverse twice as fast as slow.
     // Once fast has a .next (or a .next.next) of "null", then we return slow
     // If the length is 0 or 1... return null?
     public Node findMiddleNode() {
-        Node slow = head;
         Node fast = head;
+        Node slow = head;
 
-        if(head == null) {
+        if(head == null || head.next == null) {
             return null;
         }
 
-        while(fast.next != null) {
-            fast = fast.next;
+        while(fast != null && fast.next != null) {
             slow = slow.next;
-            if(fast.next != null) {
-                fast = fast.next;
-            }
+            fast = fast.next.next;
+
         }
         return slow;
     }
@@ -209,22 +285,14 @@ public class LinkedList {
         Node slow = head;
         Node fast = head;
 
-        if (head == null) {
-            return false;
-        }
-
-        while(fast.next != null) {
-            fast = fast.next;
+        while(fast != null && fast.next != null) {
             slow = slow.next;
-            if(fast.next != null) {
-                fast = fast.next;
-                if(fast.next == slow) {
-                    return true;
-                }
-            } else {
-                return false;
+            fast = fast.next.next;
+            if (slow == fast) {
+                return true;
             }
         }
+
         return false;
     }
 
@@ -238,25 +306,34 @@ public class LinkedList {
     // Fast.next will eventually == null. At this point, return slow.
 
     public Node findKthFromEnd(int k) {
+        // we want to return the Kth from the end of the LL, or Kth from tail.
+        // we know where tail is
+        // we could have two runner variables and have them K nodes apart.
+        // Do this by running a loop for the "fast" variable that goes until K.
+        // Then we run a loop incrementing both vars until we reach the end, or until "fast == tail" or fast.next == null.
+        // when fast == tail or fast.next == null, we return the "slow" variable, because that will be K nodes
+            // behind fast, which will be on the last node
+        // how do we check for a list shorter than K?
+            // fast count?
 
         Node fast = head;
         Node slow = head;
 
-        if(head == null) {
+        // if head is null (list is empty) return null
+        if (head == null) {
             return null;
         }
 
         for (int i = 0; i < k; i++) {
-            if (fast != null) {
+            if(fast != null) {
                 fast = fast.next;
             } else {
                 return null;
             }
         }
-
         while(fast != null) {
-            fast = fast.next;
             slow = slow.next;
+            fast = fast.next;
         }
         return slow;
     }
@@ -273,30 +350,24 @@ public class LinkedList {
             return;
         }
 
-        // dummy nodes (values are irrelevant)
-        Node dummy1 = new Node(0);
-        Node dummy2 = new Node(0);
-
-        // pointers
-        Node prev1 = dummy1;
-        Node prev2 = dummy2;
+        Node dummyNodeLess = new Node(0);
+        Node dummyNodeGreaterThanOrEqual = new Node(0);
         Node current = head;
+        Node prevLess = dummyNodeLess;
+        Node prevGreaterThanOrEqual = dummyNodeGreaterThanOrEqual;
 
         while(current != null) {
-            if (current.value < x) {
-                prev1.next = current;
-                prev1 = current;
+            if(current.value < x) {
+                prevLess.next = current;
+                prevLess = current;
             } else {
-                prev2.next = current;
-                prev2 = current;
+                prevGreaterThanOrEqual.next = current;
+                prevGreaterThanOrEqual = current;
             }
             current = current.next;
         }
 
-        prev2.next = null;
-        prev1.next = dummy2.next;
-        head = dummy1.next;
-
+        prevLess.next = dummyNodeGreaterThanOrEqual.next;
     }
 }
 
