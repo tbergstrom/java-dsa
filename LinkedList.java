@@ -1,3 +1,7 @@
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Pattern;
+
 public class LinkedList {
 
     private Node head;
@@ -368,6 +372,75 @@ public class LinkedList {
         }
 
         prevLess.next = dummyNodeGreaterThanOrEqual.next;
+    }
+
+    public void removeDuplicates(){
+        // use a HashSet
+        // iterate thru LL, check hashset to see if value is there
+        // if value is not in hashset, add it.
+        // if value IS in hashset, remove that node
+            // need a "prev" variable so we can skip the dupe node
+            // make prev.next = current.next
+
+        // if head is null or length 1, return
+        //
+
+        Set<Integer> values = new HashSet<>();
+
+        Node prev = null;
+        Node current = head;
+
+        while (current != null) {
+            if(values.contains(current.value)) {
+                prev.next = current.next;
+                length--;
+            }else {
+                values.add(current.value);
+                prev = current;
+            }
+            current = current.next;
+        }
+
+    }
+
+    public void reverseBetween(int m, int n) {
+        if (head == null) {
+            return;
+        }
+
+        // set a dummy node, value 0.
+        // set "prev" variable, set it to dummy
+        // dummy.next should point to head
+        // we'll move prev ahead m steps, so it will point to the node before m
+            // this will track the node right before the start index
+            // this should be a for loop: (i = 0; i <= m; i++)
+        // set a current variable, have it point to prev.next
+            // current will be the first to be reversed
+        // we should do an amount of steps equal to n - m
+            // a for loop from m to n should do this
+        // set a nodeToMove var to point to current.next
+        // set current.next = nodeToMove.next
+        // set nodeToMove.next = prev.next
+        // set prev.next = nodeToMove
+
+        Node dummy = new Node(0);
+        Node prev = dummy;
+        dummy.next = head;
+
+        for (int i = 0; i < m; i++) {
+            prev = prev.next;
+        }
+
+        Node current = prev.next;
+        Node nodeToMove = null;
+
+        for (int i = 0; i < n - m; i++) {
+            nodeToMove = current.next;
+            current.next = nodeToMove.next;
+            nodeToMove.next = prev.next;
+            prev.next = nodeToMove;
+        }
+        head = dummy.next;
     }
 }
 
