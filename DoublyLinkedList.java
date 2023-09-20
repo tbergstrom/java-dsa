@@ -186,4 +186,103 @@ public class DoublyLinkedList {
         length --;
         return toBeRemoved;
     }
+
+    // LEET CODE EXERCISES
+
+    public void swapFirstLast() {
+        // if length is less than 2, return
+            // (if length is 1, head and tail are the same node)
+            // (if length is 0, it's empty)
+        // firstTemp and lastTemp:
+            // each will hold a value
+        // set firstTemp.value = head.value
+        // set lastTemp.value = tail.value
+        // set tail.value = firstTemp.value
+        // set head.value = lastTemp.value
+        if (length >= 2) {
+            Node firstTemp = new Node(head.value);
+            Node lastTemp = new Node(tail.value);
+            tail.value = firstTemp.value;
+            head.value = lastTemp.value;
+        }
+    }
+
+    //    Implement a method called reverse() that reverses the order of the nodes in the list.
+    public void reverse(){
+
+        Node currentNode = head;
+        Node temp = null;
+
+        while(currentNode != null) {
+            temp = currentNode.prev;
+            currentNode.prev = currentNode.next;
+            currentNode.next = temp;
+            currentNode = currentNode.prev;
+        }
+        temp = head;
+        head = tail;
+        tail = temp;
+    }
+
+    //    Write a method to determine whether a given doubly linked list reads the same forwards and backwards.
+    public boolean isPalindrome(){
+        Node forwardPointer = head;
+        Node backwardPointer = tail;
+
+        while (forwardPointer != backwardPointer) {
+            if (forwardPointer.value != backwardPointer.value) {
+                return false;
+            } else {
+                backwardPointer = backwardPointer.prev;
+                forwardPointer = forwardPointer.next;
+            }
+        }
+        return true;
+    }
+
+    //    Implement a method called swapPairs within the class that swaps the values of adjacent nodes in the linked list. The method should not take any input parameters.
+    public void swapPairs() {
+        if (length < 2) {
+            return;
+        }
+
+        // We need to swap pairs, so indexes 0&1, 2&3, 4&5, etc.
+            // we need to set firstInPair.value = secondInPair.value
+            // then set secondInPair.value = firstInPair.value
+            // we need a temp variable to do this.
+        // We could do this in a loop, and traverse 2 at a time with
+            // .next.next
+            // Is there another way?
+            // If we use a for loop, we could do this only on even indexes
+
+        Node dummy = new Node(0);
+        dummy.next = head;
+        Node previousNode = dummy;
+        Node firstNode;
+        Node secondNode;
+
+        while(head != null && head.next != null) {
+            firstNode = head;
+            secondNode = head.next;
+
+            previousNode.next = secondNode;
+            firstNode.next = secondNode.next;
+            secondNode.next = firstNode;
+
+            secondNode.prev = previousNode;
+            firstNode.prev = secondNode;
+            if(firstNode.next != null) {
+                firstNode.next.prev = firstNode;
+            }
+
+            head = firstNode.next;
+            previousNode = firstNode;
+        }
+        head = dummy.next;
+
+        if(head != null) {
+            head.prev = null;
+        }
+
+    }
 }
