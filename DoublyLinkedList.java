@@ -85,4 +85,105 @@ public class DoublyLinkedList {
         head = newNode;
         length++;
     }
+
+    public Node removeFirst() {
+        if (length == 0) {
+            return null;
+        }
+
+        Node temp = head;
+
+        if (length == 1) {
+            head = null;
+            tail = null;
+            length --;
+            return temp;
+        }
+
+        head = head.next;
+        head.prev = null;
+        temp.next = null;
+        length--;
+        return temp;
+
+    }
+
+    public Node get(int index) {
+        if(index < 0 || index >= length) {
+            return null;
+        }
+        Node temp = new Node(0);
+
+        if (index < (length/2)) {
+            temp = head;
+            for (int i = 0; i < index; i++) {
+                temp = temp.next;
+            }
+        } else {
+            temp = tail;
+            for (int i = length-1; i > index; i--) {
+                temp = temp.prev;
+            }
+        }
+        return temp;
+    }
+
+    public boolean set(int index, int value) {
+        if(index < 0 || index > length || length < 1) {
+            return false;
+        }
+        Node nodeToBeSet = get(index);
+        nodeToBeSet.value = value;
+        return true;
+    }
+
+    public boolean insert(int index, int value) {
+        if(index < 0 || index > length) {
+            return false;
+        }
+        Node newNode = new Node(value);
+
+        if(index == 0) {
+            prepend(value);
+            return true;
+        }
+        if(index == length) {
+            append(value);
+            return true;
+        }
+
+        Node nodeBefore = get(index-1);
+        Node nodeAfter = nodeBefore.next;
+
+        newNode.prev = nodeBefore;
+        nodeBefore.next = newNode;
+        newNode.next = nodeAfter;
+        nodeAfter.prev = newNode;
+        length++;
+        return true;
+    }
+
+    public Node remove(int index) {
+
+        if(index < 0 || index >= length) {
+            return null;
+        }
+        if(index == 0) {
+            return removeFirst();
+        }
+        if(index == length -1) {
+            return removeLast();
+        }
+
+        Node toBeRemoved = get(index);
+        Node after = toBeRemoved.next;
+        Node before = toBeRemoved.prev;
+
+        before.next = after;
+        after.prev = before;
+        toBeRemoved.next = null;
+        toBeRemoved.prev = null;
+        length --;
+        return toBeRemoved;
+    }
 }
